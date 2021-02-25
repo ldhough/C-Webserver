@@ -92,6 +92,22 @@ int parseRequest(char *req, int socket) {
     return 0;
 }
 
+
+void *threadSocket(void *arg) {
+    printf("Created a thread!\n");
+    int clientSocket = *((int *)arg);
+    if (clientSocket == -1) {
+        printf("ERROR: Accepting connection failed\n");
+        perror("accept() error: ");
+    }
+    char buffer[4096];
+    // Read the req from client
+    ssize_t msgSize = recv(clientSocket, &buffer, sizeof(buffer), 0);
+    parseRequest(buffer, clientSocket);
+    close(clientSocket);
+}
+
+
 int main(int argc, const char *argv[]) {
 
     // Create a TCP socket
@@ -114,33 +130,30 @@ int main(int argc, const char *argv[]) {
         return -1;
     }
 
-    listen(socketDesc, 5);
+    listen(socketDesc, 50);
 
     struct sockaddr_in client; // Holds address of connecting entity
     int clientAddrSize = sizeof(struct sockaddr_in);
     
     // Accept incoming connection
     printf("Waiting for connections...\n");
+    pthread_t tid[60];
+    int i = 0;
     while (1) {
         int clientSocketDesc = accept(socketDesc, (struct sockaddr *)&client, (socklen_t*)&clientAddrSize);
-        if (clientSocketDesc == -1) {
-            printf("ERROR: Accepting connection failed!\n");
-            perror("accept() error: ");
+        if (pthread_create(&tid[i++], NULL, threadSocket, &clientSocketDesc) != 0)
+            printf("Failed to create a thread!\n");
+        if (i >= 50) {
+            i = 0;
+            while (i < 50) {
+                pthread_join(tid[i++], NULL);
+            }
+            i = 0;
         }
-
-        char buffer[4096];
-        // Read the req from client
-        ssize_t msgSize = recv(clientSocketDesc, &buffer, sizeof(buffer), 0);
-        //printf("%s", buffer);
-        parseRequest(buffer, clientSocketDesc);
-        close(clientSocketDesc);
-        printf("Client socket closed.\n");
     }
 
     char *clientIp = inet_ntoa(client.sin_addr); // Network endian bytes to ip address string
     int clientPort = ntohs(client.sin_port);
-    
-    
     
     return 0;
 }
