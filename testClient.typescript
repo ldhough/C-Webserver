@@ -1,0 +1,8 @@
+Script started on 2021-02-25 01:33:10-05:00 [TERM="xterm-256color" TTY="/dev/pts/3" COLUMNS="170" LINES="53"]
+]0;lannie@lannieubuntu: ~/Desktop/C-Webserver[01;32mlannie@lannieubuntu[00m:[01;34m~/Desktop/C-Webserver[00m$ python3 Webclient.py
+RECEIVED: b'HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 152\n\n<style type="text/css">\nh1 {\n    text-align: center;\n    font-size: 120px;\n    font-family: Helvetica, Verdana, Arial;\n}\n</style>\n<h1>HELLO WORLD!</h1>\n'
+RECEIVED: b'HTTP/1.1 404 Not found\nContent-Type: text/html\nContent-Length: 19\n\n<h1>404 Error</h1>\n'
+]0;lannie@lannieubuntu: ~/Desktop/C-Webserver[01;32mlannie@lannieubuntu[00m:[01;34m~/Desktop/C-Webserver[00m$ exit
+exit
+
+Script done on 2021-02-25 01:33:19-05:00 [COMMAND_EXIT_CODE="0"]
